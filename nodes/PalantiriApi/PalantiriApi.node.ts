@@ -10,6 +10,7 @@ export class PalantiriApi implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Palantiri API',
 		name: 'palantiriApi',
+		icon: { light: 'file:palantiriApi.svg', dark: 'file:palantiriApi.dark.svg' },
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] }}',
@@ -18,6 +19,7 @@ export class PalantiriApi implements INodeType {
 		inputs: ['main'],
 		outputs: ['main'],
 		credentials: [{ name: 'palantiriApiApi', required: true }],
+		usableAsTool: true,
 		properties: [
 			{
 				displayName: 'Instance ID',
@@ -32,20 +34,21 @@ export class PalantiriApi implements INodeType {
 				displayName: 'Operação',
 				name: 'operation',
 				type: 'options',
+				noDataExpression: true,
 				options: [
+					{ name: 'Enviar Documento', value: 'sendDocument' },
+					{ name: 'Enviar Imagem', value: 'sendImage' },
+					{ name: 'Enviar Texto', value: 'sendText' },
+					{ name: 'Listar Chats', value: 'listChats' },
+					{ name: 'Listar Mensagens', value: 'listMessages' },
 					{ name: 'Status', value: 'status' },
-					{ name: 'Enviar texto', value: 'sendText' },
-					{ name: 'Enviar imagem', value: 'sendImage' },
-					{ name: 'Enviar documento', value: 'sendDocument' },
-					{ name: 'Listar chats', value: 'listChats' },
-					{ name: 'Listar mensagens', value: 'listMessages' },
 				],
 				default: 'sendText',
 				description: 'Ação a executar',
 			},
 			// --- sendText / sendImage / sendDocument
 			{
-				displayName: 'Para (JID ou número)',
+				displayName: 'Para (JID Ou Número)',
 				name: 'to',
 				type: 'string',
 				default: '',
@@ -81,7 +84,7 @@ export class PalantiriApi implements INodeType {
 				displayOptions: { show: { operation: ['sendImage', 'sendDocument'] } },
 			},
 			{
-				displayName: 'Nome do arquivo',
+				displayName: 'Nome Do Arquivo',
 				name: 'fileName',
 				type: 'string',
 				default: '',
@@ -102,8 +105,11 @@ export class PalantiriApi implements INodeType {
 				displayName: 'Limite',
 				name: 'limit',
 				type: 'number',
+				typeOptions: {
+					minValue: 1,
+				},
 				default: 50,
-				description: 'Máximo de itens (chats ou mensagens)',
+				description: 'Max number of results to return',
 				displayOptions: { show: { operation: ['listChats', 'listMessages'] } },
 			},
 		],
@@ -227,3 +233,6 @@ export class PalantiriApi implements INodeType {
 		return [results];
 	}
 }
+
+// n8n carrega o nó via require(); default export garante compatibilidade
+export default PalantiriApi;

@@ -15,6 +15,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["nodes/**/*.ts", "credentials/**/*.ts"],
+  "include": ["credentials/**/*", "nodes/**/*", "nodes/**/*.json", "package.json"],
   "exclude": ["node_modules", "dist"]
 }

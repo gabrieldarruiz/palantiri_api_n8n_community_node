@@ -10,6 +10,18 @@ export class PalantiriApiApi implements ICredentialType {
 
 	documentationUrl = 'https://github.com/gabrieldarruiz/palantiri_api_n8n_community_node';
 
+	icon = 'file:palantiriApi.svg' as const;
+
+	test = {
+		request: {
+			method: 'GET' as const,
+			url: '={{ $credentials.baseUrl }}/instances/default/status',
+			headers: {
+				'X-API-Key': '={{ $credentials.apiKey }}',
+			},
+		},
+	};
+
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Base URL',
@@ -31,3 +43,5 @@ export class PalantiriApiApi implements ICredentialType {
 		},
 	];
 }
+
+export default PalantiriApiApi;
