@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-palantiriapi",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "dist/nodes/PalantiriApi/PalantiriApi.node.js",
   "description": "n8n community node for palantiriAPI (WhatsApp API)",
   "license": "MIT",
