@@ -15,7 +15,7 @@ export class PalantiriApiApi implements ICredentialType {
 	test = {
 		request: {
 			method: 'GET' as const,
-			url: '={{ $credentials.baseUrl }}/instances/default/status',
+			url: '={{ $credentials.baseUrl }}/instances',
 			headers: {
 				'X-API-Key': '={{ $credentials.apiKey }}',
 			},
@@ -27,9 +27,9 @@ export class PalantiriApiApi implements ICredentialType {
 			displayName: 'Base URL',
 			name: 'baseUrl',
 			type: 'string',
-			default: 'https://api.example.com',
-			placeholder: 'https://sua-api.com',
-			description: 'URL base da palantiriAPI (ex.: https://n8n.astrasolution.com.br/palantiri)',
+			default: 'https://palantiri-api.astrasolution.com.br',
+			placeholder: 'https://palantiri-api.astrasolution.com.br',
+			description: 'URL base da palantiriAPI',
 			required: true,
 		},
 		{
