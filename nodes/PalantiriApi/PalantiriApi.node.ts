@@ -10,7 +10,10 @@ export class PalantiriApi implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Palantiri API',
 		name: 'palantiriApi',
-		icon: { light: 'file:palantiriApi.svg', dark: 'file:palantiriApi.dark.svg' },
+		icon: {
+			light: 'file:dist/nodes/PalantiriApi/palantiriApiIcon.svg',
+			dark: 'file:dist/nodes/PalantiriApi/palantiriApiIcon.svg',
+		},
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{ $parameter["operation"] }}',
