@@ -10,7 +10,7 @@ export class PalantiriApiApi implements ICredentialType {
 
 	documentationUrl = 'https://github.com/gabrieldarruiz/palantiri_api_n8n_community_node';
 
-	icon = 'file:palantiriApi.svg' as const;
+	icon = 'file:palantiriApiIcon.svg' as const;
 
 	test = {
 		request: {
