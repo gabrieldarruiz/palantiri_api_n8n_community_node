@@ -36,12 +36,12 @@ export class PalantiriApi implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: [
+					{ name: 'Baixar Mídia', value: 'getMedia' },
 					{ name: 'Enviar Documento', value: 'sendDocument' },
 					{ name: 'Enviar Imagem', value: 'sendImage' },
 					{ name: 'Enviar Texto', value: 'sendText' },
 					{ name: 'Listar Chats', value: 'listChats' },
 					{ name: 'Listar Mensagens', value: 'listMessages' },
-					{ name: 'Baixar Mídia', value: 'getMedia' },
 					{ name: 'Status', value: 'status' },
 				],
 				default: 'sendText',
@@ -115,7 +115,7 @@ export class PalantiriApi implements INodeType {
 			},
 			// --- getMedia (baixar imagem/documento/áudio da mensagem)
 			{
-				displayName: 'Chat JID',
+				displayName: 'Chat Jid',
 				name: 'chatMedia',
 				type: 'string',
 				default: '',
@@ -125,11 +125,13 @@ export class PalantiriApi implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID da Mensagem',
+				displayName: 'Message ID',
 				name: 'messageId',
 				type: 'string',
 				default: '',
+				// eslint-disable-next-line n8n-nodes-base/node-param-placeholder-miscased-id -- webhook body uses lowercase "id"
 				placeholder: '{{ $json.body.id }}',
+				// eslint-disable-next-line n8n-nodes-base/node-param-description-miscased-id -- webhook body uses lowercase "id"
 				description: 'ID da mensagem (ex.: do webhook body.id)',
 				displayOptions: { show: { operation: ['getMedia'] } },
 				required: true,
