@@ -41,6 +41,7 @@ export class PalantiriApi implements INodeType {
 					{ name: 'Enviar Texto', value: 'sendText' },
 					{ name: 'Listar Chats', value: 'listChats' },
 					{ name: 'Listar Mensagens', value: 'listMessages' },
+					{ name: 'Baixar Mídia', value: 'getMedia' },
 					{ name: 'Status', value: 'status' },
 				],
 				default: 'sendText',
@@ -111,6 +112,27 @@ export class PalantiriApi implements INodeType {
 				default: 50,
 				description: 'Max number of results to return',
 				displayOptions: { show: { operation: ['listChats', 'listMessages'] } },
+			},
+			// --- getMedia (baixar imagem/documento/áudio da mensagem)
+			{
+				displayName: 'Chat JID',
+				name: 'chatMedia',
+				type: 'string',
+				default: '',
+				placeholder: '{{ $json.body.chat }}',
+				description: 'JID do chat da mensagem (ex.: do webhook body.chat)',
+				displayOptions: { show: { operation: ['getMedia'] } },
+				required: true,
+			},
+			{
+				displayName: 'ID da Mensagem',
+				name: 'messageId',
+				type: 'string',
+				default: '',
+				placeholder: '{{ $json.body.id }}',
+				description: 'ID da mensagem (ex.: do webhook body.id)',
+				displayOptions: { show: { operation: ['getMedia'] } },
+				required: true,
 			},
 		],
 	};
@@ -208,6 +230,29 @@ export class PalantiriApi implements INodeType {
 							json: true,
 						});
 						break;
+					}
+					case 'getMedia': {
+						const chatMedia = this.getNodeParameter('chatMedia', i) as string;
+						const messageId = this.getNodeParameter('messageId', i) as string;
+						const mediaResponse = await this.helpers.httpRequest({
+							method: 'GET',
+							url: `${baseUrl}/instances/${id}/media`,
+							headers,
+							qs: { chat: chatMedia, message_id: messageId },
+							json: false,
+							encoding: 'arraybuffer',
+							returnFullResponse: true,
+						}) as { body: ArrayBuffer; headers: { 'content-type'?: string } };
+						const buffer = Buffer.from(mediaResponse.body);
+						const contentType = mediaResponse.headers['content-type'] || 'application/octet-stream';
+						const ext = contentType.includes('jpeg') || contentType.includes('jpg') ? 'jpg' : contentType.includes('png') ? 'png' : contentType.includes('pdf') ? 'pdf' : 'bin';
+						const binaryData = await this.helpers.prepareBinaryData(buffer, `media-${messageId}.${ext}`, contentType);
+						results.push({
+							json: { chat: chatMedia, message_id: messageId, media_type: contentType } as IDataObject,
+							binary: { data: binaryData },
+							pairedItem: { item: i },
+						});
+						continue;
 					}
 					default:
 						response = { error: `Operação não implementada: ${operation}` };
