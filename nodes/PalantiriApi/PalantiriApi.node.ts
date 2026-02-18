@@ -1,3 +1,6 @@
+import {
+	NodeOperationError,
+} from 'n8n-workflow';
 import type {
 	IDataObject,
 	IExecuteFunctions,
@@ -275,7 +278,7 @@ export class PalantiriApi implements INodeType {
 						pairedItem: { item: i },
 					});
 				} else {
-					throw new Error(status != null ? `${message} (HTTP ${status})` : message);
+					throw new NodeOperationError(this.getNode(), status != null ? `${message} (HTTP ${status})` : message);
 				}
 			}
 		}
