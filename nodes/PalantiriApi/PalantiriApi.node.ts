@@ -265,14 +265,17 @@ export class PalantiriApi implements INodeType {
 					pairedItem: { item: i },
 				});
 			} catch (error: unknown) {
-				const err = error as { message?: string; response?: { body?: IDataObject } };
+				const err = error as { message?: string; response?: { status?: number; data?: unknown } };
+				const message = err.message || String(error);
+				const status = err.response?.status;
+				const safeDetails = status != null ? { status } : {};
 				if (this.continueOnFail()) {
 					results.push({
-						json: { error: err.message || String(error), details: err.response?.body } as IDataObject,
+						json: { error: message, ...safeDetails } as IDataObject,
 						pairedItem: { item: i },
 					});
 				} else {
-					throw error;
+					throw new Error(status != null ? `${message} (HTTP ${status})` : message);
 				}
 			}
 		}
