@@ -30,7 +30,7 @@ export class PalantiriApi implements INodeType {
 				type: 'string',
 				default: '',
 				placeholder: 'default',
-				description: 'ID da instância WhatsApp na palantiriAPI',
+				description: 'ID da instância (deve ser o mesmo da API Key; ex.: blackfinance, palan). 403 = key de outra instância.',
 				required: true,
 			},
 			{
@@ -242,7 +242,10 @@ export class PalantiriApi implements INodeType {
 						const mediaResponse = await this.helpers.httpRequest({
 							method: 'GET',
 							url: `${baseUrl}/instances/${id}/media`,
-							headers,
+							headers: {
+								...headers,
+								Accept: 'application/octet-stream',
+							},
 							qs: { chat: chatMedia, message_id: messageId },
 							json: false,
 							encoding: 'arraybuffer',
@@ -250,7 +253,16 @@ export class PalantiriApi implements INodeType {
 						}) as { body: ArrayBuffer; headers: { 'content-type'?: string } };
 						const buffer = Buffer.from(mediaResponse.body);
 						const contentType = mediaResponse.headers['content-type'] || 'application/octet-stream';
-						const ext = contentType.includes('jpeg') || contentType.includes('jpg') ? 'jpg' : contentType.includes('png') ? 'png' : contentType.includes('pdf') ? 'pdf' : 'bin';
+						let ext = 'bin';
+						if (contentType.includes('jpeg') || contentType.includes('jpg')) ext = 'jpg';
+						else if (contentType.includes('png')) ext = 'png';
+						else if (contentType.includes('pdf')) ext = 'pdf';
+						else if (contentType.includes('ogg') || contentType.includes('oga')) ext = 'ogg';
+						else if (contentType.includes('mpeg') || contentType.includes('mp3')) ext = 'mp3';
+						else if (contentType.includes('mp4')) ext = 'mp4';
+						else if (contentType.includes('webm')) ext = 'webm';
+						else if (contentType.includes('wav')) ext = 'wav';
+						else if (contentType.includes('m4a')) ext = 'm4a';
 						const binaryData = await this.helpers.prepareBinaryData(buffer, `media-${messageId}.${ext}`, contentType);
 						results.push({
 							json: { chat: chatMedia, message_id: messageId, media_type: contentType } as IDataObject,
